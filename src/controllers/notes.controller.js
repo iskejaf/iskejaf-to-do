@@ -3,7 +3,7 @@ const note = require('../models/note');
 
 // All Notes
 notesCtrl.renderNotes = async (req, res) => {
-    const notes = await note.find().lean();
+    const notes = await note.find({user: req.user.id}).sort({createdAt: 'desc'}).lean();
     res.render('notes/all-notes', { notes });
 };
 
@@ -14,6 +14,7 @@ notesCtrl.renderNewNote = (req, res) => {
 notesCtrl.newNote = async (req, res) => {
     const {title, description} = req.body;
     const newNote = new note({title, description});
+    newNote.user = req.user.id;
     await newNote.save();
     req.flash('success_msg', 'Nota Agregada correctamente');
     res.redirect('/notes');
@@ -22,6 +23,10 @@ notesCtrl.newNote = async (req, res) => {
 // Edit Note
 notesCtrl.renderEditNote = async (req, res) => {
     const editNote = await note.findById(req.params.id).lean();
+    if (editNote.user != req.user.id) {
+        req.flash('error', 'No Autorizado');
+        return res.redirect('/notes')
+    }
     res.render('notes/edit-note', { editNote });
 };
 notesCtrl.editNote = async (req, res) => {

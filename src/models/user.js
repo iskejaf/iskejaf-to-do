@@ -25,7 +25,7 @@ userSchema.methods.encryptPassword = async password => {
 };
 
 userSchema.methods.matchPassword = async function(password) {
-    await bcrypy.compare(password, this.password);
+    return await bcrypy.compare(password, this.password);
 };
 
 module.exports = model('user', userSchema);

@@ -6,6 +6,9 @@ const noteSchema = new Schema ({
         required: true
     },
     description: {
+        type: String
+    },
+    user: {
         type: String,
         required: true
     }
