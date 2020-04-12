@@ -8,7 +8,8 @@ const userSchema = new Schema ({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -19,7 +20,7 @@ const userSchema = new Schema ({
 });
 
 userSchema.methods.encryptPassword = async password => {
-    const sant = await bcrypy.genSalt(10);
+    const salt = await bcrypy.genSalt(10);
     return await bcrypy.hash(password, salt);
 };
 
@@ -27,4 +28,4 @@ userSchema.methods.matchPassword = async function(password) {
     await bcrypy.compare(password, this.password);
 };
 
-module.exports = model('user', noteSchema);
+module.exports = model('user', userSchema);
